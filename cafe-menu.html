@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bosque & Brew – Menú</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700;800&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --forest: #2C3D2A;
+      --forest-mid: #3D5438;
+      --sage: #7A9468;
+      --sage-light: #B5C9A8;
+      --sage-pale: #EDF2E8;
+      --cream: #FAF7F2;
+      --cream-dark: #EEE8DE;
+      --dusty-rose: #D4826A;
+      --rose-pale: #F5E8E4;
+      --ink: #1A1F18;
+      --muted: #6B7A65;
+      --pop: #E8C547;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; background: var(--forest); font-family: 'Montserrat', sans-serif; overflow: hidden; }
+
+    /* LAYOUT */
+    #menu-scroll {
+      position: fixed;
+      top: 0; bottom: 0;
+      left: 50%; transform: translateX(-50%);
+      width: 100%;
+      max-width: 420px;
+      overflow-y: auto;
+      background: var(--cream);
+      scrollbar-width: none;
+    }
+    #menu-scroll::-webkit-scrollbar { display: none; }
+
+    /* HERO */
+    .hero {
+      background: var(--forest);
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    /* Fondo de hojas SVG */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 1.5rem 1.75rem;
+      width: 100%;
+    }
+
+    /* Mascota gatito SVG */
+    .hero-cat {
+      position: absolute;
+      top: 12px;
+      right: 18px;
+      z-index: 3;
+      width: 64px;
+      opacity: 0.95;
+    }
+
+    .cafe-tag {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--sage-light);
+      background: rgba(122,148,104,0.18);
+      border: 1px solid rgba(181,201,168,0.3);
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 0.6rem;
+    }
+
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: #FAF7F2;
+      line-height: 1;
+      margin-bottom: 0.2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-name span {
+      color: var(--pop);
+    }
+
+    .hero-sub {
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--sage-light);
+      letter-spacing: 0.12em;
+      margin-bottom: 1.1rem;
+    }
+
+    .hero-hours-row {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .hour-pill {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(181,201,168,0.2);
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 10px;
+      color: rgba(250,247,242,0.7);
+    }
+
+    .hour-pill strong { color: var(--sage-light); font-weight: 500; }
+
+    /* Curva inferior del hero */
+    .hero-curve {
+      width: 100%;
+      display: block;
+      margin-bottom: -2px;
+    }
+
+    /* NAV */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--cream);
+      border-bottom: 1px solid var(--cream-dark);
+      display: flex;
+      align-items: center;
+      padding: 0 0.75rem;
+      box-shadow: 0 2px 8px rgba(44,61,42,0.06);
+    }
+
+    .nav-links { display: flex; overflow-x: auto; scrollbar-width: none; flex: 1; gap: 0; }
+    .nav-links::-webkit-scrollbar { display: none; }
+
+    .nav-link {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 0.75rem 0.55rem;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      flex-shrink: 0;
+      transition: color 0.2s;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--forest);
+      border-bottom-color: var(--sage);
+    }
+
+    .lang-switch { display: flex; gap: 3px; flex-shrink: 0; padding-left: 0.5rem; }
+    .lang-btn {
+      font-size: 9px; font-weight: 500; padding: 3px 7px;
+      border: 1px solid var(--cream-dark); background: transparent;
+      color: var(--muted); cursor: pointer; border-radius: 20px;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .lang-btn.active { background: var(--forest); color: var(--cream); border-color: var(--forest); }
+
+    /* SECCIONES */
+    .menu-section { padding: 1.5rem 1.25rem 1rem; border-bottom: 1px solid var(--cream-dark); }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.1rem;
+    }
+
+    .section-icon { flex-shrink: 0; width: 32px; height: 32px; }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--forest);
+      line-height: 1;
+      letter-spacing: 0.01em;
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--cream-dark);
+    }
+
+    /* ITEMS */
+    .menu-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 0.7rem 0;
+      border-bottom: 1px dashed rgba(44,61,42,0.1);
+    }
+    .menu-item:last-child { border-bottom: none; }
+
+    .item-dot {
+      width: 6px; height: 6px;
+      background: var(--sage);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .item-info { flex: 1; }
+
+    .item-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+      margin-bottom: 3px;
+      line-height: 1.3;
+    }
+
+    .item-desc {
+      font-size: 10.5px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-weight: 300;
+    }
+
+    .item-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--dusty-rose);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .item-tag {
+      display: inline-block;
+      font-size: 7.5px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 1px 6px;
+      border-radius: 20px;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+    .tag-pop { background: var(--pop); color: var(--forest); }
+    .tag-green { background: var(--sage-pale); color: var(--forest-mid); }
+    .tag-rose { background: var(--rose-pale); color: var(--dusty-rose); }
+
+    /* FOOTER */
+    .menu-footer {
+      background: var(--forest);
+      padding: 2rem 1.25rem 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer-curve {
+      width: 100%;
+      display: block;
+      margin-top: -2px;
+    }
+
+    .footer-inner { position: relative; z-index: 2; }
+
+    .footer-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--cream);
+      margin-bottom: 0.3rem;
+      letter-spacing: -0.01em;
+    }
+    .footer-name span { color: var(--pop); }
+
+    .footer-address {
+      font-size: 10px;
+      color: rgba(250,247,242,0.45);
+      margin-bottom: 0.2rem;
+      letter-spacing: 0.04em;
+    }
+
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 0.75rem;
+    }
+
+    .social-pill {
+      font-size: 9px;
+      font-weight: 500;
+      color: var(--sage-light);
+      background: rgba(122,148,104,0.15);
+      border: 1px solid rgba(181,201,168,0.2);
+      padding: 4px 10px;
+      border-radius: 20px;
+      text-decoration: none;
+    }
+
+    /* WHATSAPP */
+    .whatsapp-btn {
+      position: fixed;
+      bottom: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%) translateX(calc(210px - 60px));
+      z-index: 200;
+      background: #25D366;
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: 0.6rem 1.1rem;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(37,211,102,0.35);
+      font-family: 'Montserrat', sans-serif;
+    }
+    .whatsapp-btn svg { width: 18px; height: 18px; fill: #fff; }
+
+    @media (max-width: 420px) {
+      #menu-scroll { left: 0; transform: none; max-width: 100%; }
+      .whatsapp-btn { transform: none; right: 1rem; left: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="menu-scroll">
+
+  <!-- HERO — imagen de Canva -->
+  <div class="hero">
+    <img class="hero-img" src="https://raw.githubusercontent.com/Hara000/cafe-menu-/main/Agregar%20un%20t%C3%ADtulo.png" alt="Bosque & Brew Café">
+    <svg class="hero-curve" viewBox="0 0 420 32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0 32 Q105 0 210 16 Q315 32 420 8 L420 32 Z" fill="#FAF7F2"/>
+    </svg>
+  </div>
+
+  <!-- NAV -->
+  <nav class="sticky-nav">
+    <div class="nav-links">
+      <a href="#cafe" class="nav-link active" id="nav-cafe">Café</a>
+      <a href="#food" class="nav-link" id="nav-food">Comida</a>
+      <a href="#postres" class="nav-link" id="nav-postres">Postres</a>
+      <a href="#especiales" class="nav-link" id="nav-especiales">Especiales</a>
+    </div>
+    <div class="lang-switch">
+      <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+  </nav>
+
+  <!-- CAFÉ -->
+  <section class="menu-section" id="cafe">
+    <div class="section-head">
+      <!-- Ícono taza doodle -->
+      <svg class="section-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 12 Q6 8 10 8 L22 8 Q26 8 26 12 L25 22 Q25 26 16 26 Q7 26 7 22 Z" fill="none" stroke="#2C3D2A" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M26 14 Q31 14 31 18 Q31 22 26 22" stroke="#2C3D2A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M12 5 Q11 3 13 2 Q15 1 14 4" stroke="#7A9468" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        <path d="M17 5 Q16 2 18 1 Q20 0 19 3" stroke="#7A9468" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      </svg>
+      <h2 class="section-title" id="ttl-cafe">Café</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="c1n">Espresso <span class="item-tag tag-pop">Must</span></p><p class="item-desc" id="c1d">Doble shot, origen Oaxaca, tostado medio</p></div><p class="item-price">$55</p></div>
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="c2n">Latte de Temporada</p><p class="item-desc" id="c2d">Lavanda, vainilla o cardamomo · leche de avena disponible</p></div><p class="item-price">$85</p></div>
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="c3n">Cold Brew <span class="item-tag tag-green">Nuevo</span></p><p class="item-desc" id="c3d">18 horas de extracción, sirope de piloncillo opcional</p></div><p class="item-price">$80</p></div>
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="c4n">Matcha Latte</p><p class="item-desc" id="c4d">Matcha ceremonial japonés, leche de avena, sin azúcar añadida</p></div><p class="item-price">$90</p></div>
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="c5n">Cappuccino</p><p class="item-desc" id="c5d">Doble espresso, leche vaporizada, arte latte</p></div><p class="item-price">$70</p></div>
+  </section>
+
+  <!-- COMIDA -->
+  <section class="menu-section" id="food" style="background:#FAFAF7;">
+    <div class="section-head">
+      <!-- Ícono croissant doodle -->
+      <svg class="section-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 22 Q8 10 16 8 Q24 6 28 14 Q26 20 20 22 Q14 24 4 22Z" fill="none" stroke="#2C3D2A" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M8 20 Q12 12 18 11" stroke="#7A9468" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <path d="M12 21 Q16 14 21 12" stroke="#7A9468" stroke-width="1" fill="none" stroke-linecap="round"/>
+      </svg>
+      <h2 class="section-title" id="ttl-food">Comida</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="f1n">Avocado Toast <span class="item-tag tag-pop">Fav</span></p><p class="item-desc" id="f1d">Pan masa madre, aguacate, huevo estrellado, hojuelas de chile, semillas</p></div><p class="item-price">$145</p></div>
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="f2n">Croissant de Jamón</p><p class="item-desc" id="f2d">Croissant horneado en casa, jamón serrano, queso gruyère, mostaza dijon</p></div><p class="item-price">$125</p></div>
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="f3n">Bowl de Granola</p><p class="item-desc" id="f3d">Granola artesanal, yogurt griego, miel, frutos rojos de temporada</p></div><p class="item-price">$110</p></div>
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="f4n">Waffles <span class="item-tag tag-rose">Finde</span></p><p class="item-desc" id="f4d">Masa belga, fresas, crema batida, maple orgánico</p></div><p class="item-price">$155</p></div>
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="f5n">Sandwich Caprese</p><p class="item-desc" id="f5d">Focaccia, mozzarella fresca, jitomate rostizado, pesto de albahaca</p></div><p class="item-price">$135</p></div>
+  </section>
+
+  <!-- POSTRES -->
+  <section class="menu-section" id="postres">
+    <div class="section-head">
+      <!-- Ícono pastel doodle -->
+      <svg class="section-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="16" width="22" height="12" rx="2" fill="none" stroke="#2C3D2A" stroke-width="1.5"/>
+        <path d="M5 16 Q16 10 27 16" fill="none" stroke="#2C3D2A" stroke-width="1.5"/>
+        <line x1="16" y1="10" x2="16" y2="6" stroke="#D4826A" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="16" cy="5" r="2" fill="#E8C547"/>
+        <path d="M9 20 Q12 18 15 20 Q18 22 21 20 Q24 18 27 20" stroke="#7A9468" stroke-width="1" fill="none"/>
+      </svg>
+      <h2 class="section-title" id="ttl-postres">Postres</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="p1n">Cheesecake de Matcha <span class="item-tag tag-green">Chef</span></p><p class="item-desc" id="p1d">Base de galleta, relleno de matcha y queso crema, coulis de frambuesa</p></div><p class="item-price">$95</p></div>
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="p2n">Brownie Fudge</p><p class="item-desc" id="p2d">Chocolate 70%, nuez, flor de sal, servido tibio con helado de vainilla</p></div><p class="item-price">$85</p></div>
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="p3n">Cinnamon Roll <span class="item-tag tag-pop">Must</span></p><p class="item-desc" id="p3d">Horneado diario, glaseado de queso crema, canela de Ceilán</p></div><p class="item-price">$75</p></div>
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="p4n">Slice del Día</p><p class="item-desc" id="p4d">Pregunta a tu barista por el pastel de hoy · cambia cada semana</p></div><p class="item-price">$80</p></div>
+  </section>
+
+  <!-- ESPECIALES -->
+  <section class="menu-section" id="especiales" style="background:#FAFAF7;">
+    <div class="section-head">
+      <!-- Ícono estrella doodle -->
+      <svg class="section-icon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 4 L18.5 11.5 L26 11.5 L20 16 L22.5 24 L16 19.5 L9.5 24 L12 16 L6 11.5 L13.5 11.5 Z" fill="none" stroke="#2C3D2A" stroke-width="1.5" stroke-linejoin="round"/>
+        <circle cx="16" cy="15" r="2" fill="#E8C547"/>
+      </svg>
+      <h2 class="section-title" id="ttl-especiales">Especiales</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="e1n">Dalgona de Oreo <span class="item-tag tag-pop">Viral</span></p><p class="item-desc" id="e1d">Café batido estilo coreano, leche fría, crumble de Oreo</p></div><p class="item-price">$95</p></div>
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="e2n">Café de Olla Helado</p><p class="item-desc" id="e2d">Receta tradicional, piloncillo, canela, servido sobre hielo</p></div><p class="item-price">$80</p></div>
+    <div class="menu-item"><div class="item-dot"></div><div class="item-info"><p class="item-name" id="e3n">Brunch Set <span class="item-tag tag-green">Valor</span></p><p class="item-desc" id="e3d">Bebida caliente + Avocado Toast + Slice del día · ahorra $40</p></div><p class="item-price">$265</p></div>
+  </section>
+
+  <!-- FOOTER -->
+  <div style="background:var(--cream);">
+    <svg viewBox="0 0 420 32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;display:block;margin-bottom:-2px;">
+      <path d="M0 0 Q105 32 210 16 Q315 0 420 24 L420 0 Z" fill="#2C3D2A"/>
+    </svg>
+  </div>
+
+  <footer class="menu-footer">
+    <div class="footer-inner">
+      <p class="footer-name">Bosque <span>&</span> Brew</p>
+      <p class="footer-address" id="txt-addr">Calle Lerdo 88, Col. Americana · Guadalajara, Jal.</p>
+      <p class="footer-address">Tel. (33) 8765-4321</p>
+      <div class="footer-social">
+        <a href="#" class="social-pill">@bosquebrew</a>
+        <a href="#" class="social-pill" id="txt-reserve">Reservar mesa</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<a class="whatsapp-btn" href="https://wa.me/523387654321" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  Ordenar
+</a>
+
+<script>
+const T = {
+  es: {
+    tag:"Café & Brunch", sub:"specialty coffee · comida de autor",
+    lv:"Lun–Vie", sd:"Sáb–Dom",
+    navCafe:"Café", navFood:"Comida", navPostres:"Postres", navEspeciales:"Especiales",
+    ttlCafe:"Café", ttlFood:"Comida", ttlPostres:"Postres", ttlEspeciales:"Especiales",
+    addr:"Calle Lerdo 88, Col. Americana · Guadalajara, Jal.", reserve:"Reservar mesa",
+    items:[
+      ["Espresso","Doble shot, origen Oaxaca, tostado medio"],
+      ["Latte de Temporada","Lavanda, vainilla o cardamomo · leche de avena disponible"],
+      ["Cold Brew","18 horas de extracción, sirope de piloncillo opcional"],
+      ["Matcha Latte","Matcha ceremonial japonés, leche de avena, sin azúcar añadida"],
+      ["Cappuccino","Doble espresso, leche vaporizada, arte latte"],
+      ["Avocado Toast","Pan masa madre, aguacate, huevo estrellado, hojuelas de chile, semillas"],
+      ["Croissant de Jamón","Croissant horneado en casa, jamón serrano, queso gruyère, mostaza dijon"],
+      ["Bowl de Granola","Granola artesanal, yogurt griego, miel, frutos rojos de temporada"],
+      ["Waffles","Masa belga, fresas, crema batida, maple orgánico"],
+      ["Sandwich Caprese","Focaccia, mozzarella fresca, jitomate rostizado, pesto de albahaca"],
+      ["Cheesecake de Matcha","Base de galleta, relleno de matcha y queso crema, coulis de frambuesa"],
+      ["Brownie Fudge","Chocolate 70%, nuez, flor de sal, servido tibio con helado de vainilla"],
+      ["Cinnamon Roll","Horneado diario, glaseado de queso crema, canela de Ceilán"],
+      ["Slice del Día","Pregunta a tu barista por el pastel de hoy · cambia cada semana"],
+      ["Dalgona de Oreo","Café batido estilo coreano, leche fría, crumble de Oreo"],
+      ["Café de Olla Helado","Receta tradicional, piloncillo, canela, servido sobre hielo"],
+      ["Brunch Set","Bebida caliente + Avocado Toast + Slice del día · ahorra $40"]
+    ]
+  },
+  en: {
+    tag:"Café & Brunch", sub:"specialty coffee · homemade food",
+    lv:"Mon–Fri", sd:"Sat–Sun",
+    navCafe:"Coffee", navFood:"Food", navPostres:"Desserts", navEspeciales:"Specials",
+    ttlCafe:"Coffee", ttlFood:"Food", ttlPostres:"Desserts", ttlEspeciales:"Specials",
+    addr:"88 Lerdo St., Col. Americana · Guadalajara, Jal.", reserve:"Book a table",
+    items:[
+      ["Espresso","Double shot, Oaxaca origin, medium roast"],
+      ["Seasonal Latte","Lavender, vanilla or cardamom · oat milk available"],
+      ["Cold Brew","18-hour extraction, piloncillo syrup optional"],
+      ["Matcha Latte","Japanese ceremonial matcha, oat milk, no added sugar"],
+      ["Cappuccino","Double espresso, steamed milk, latte art"],
+      ["Avocado Toast","Sourdough, avocado, fried egg, chili flakes, seeds"],
+      ["Ham Croissant","House-baked croissant, serrano ham, gruyère, dijon mustard"],
+      ["Granola Bowl","Artisan granola, Greek yogurt, honey, seasonal berries"],
+      ["Waffles","Belgian batter, strawberries, whipped cream, organic maple"],
+      ["Caprese Sandwich","Focaccia, fresh mozzarella, roasted tomato, basil pesto"],
+      ["Matcha Cheesecake","Cookie crust, matcha & cream cheese filling, raspberry coulis"],
+      ["Brownie Fudge","70% chocolate, walnut, fleur de sel, served warm with vanilla ice cream"],
+      ["Cinnamon Roll","Baked daily, cream cheese glaze, Ceylon cinnamon"],
+      ["Slice of the Day","Ask your barista for today's cake · changes every week"],
+      ["Dalgona Oreo","Korean-style whipped coffee, cold milk, Oreo crumble"],
+      ["Iced Café de Olla","Traditional recipe, piloncillo, cinnamon, served over ice"],
+      ["Brunch Set","Hot drink + Avocado Toast + Slice of the Day · save $40"]
+    ]
+  }
+};
+
+function setLang(lang) {
+  const t = T[lang];
+  document.getElementById('txt-tag').textContent = t.tag;
+  document.getElementById('txt-sub').textContent = t.sub;
+  document.getElementById('txt-lv').textContent = t.lv;
+  document.getElementById('txt-sd').textContent = t.sd;
+  document.getElementById('nav-cafe').textContent = t.navCafe;
+  document.getElementById('nav-food').textContent = t.navFood;
+  document.getElementById('nav-postres').textContent = t.navPostres;
+  document.getElementById('nav-especiales').textContent = t.navEspeciales;
+  document.getElementById('ttl-cafe').textContent = t.ttlCafe;
+  document.getElementById('ttl-food').textContent = t.ttlFood;
+  document.getElementById('ttl-postres').textContent = t.ttlPostres;
+  document.getElementById('ttl-especiales').textContent = t.ttlEspeciales;
+  document.getElementById('txt-addr').textContent = t.addr;
+  document.getElementById('txt-reserve').textContent = t.reserve;
+  const ids = ['c1','c2','c3','c4','c5','f1','f2','f3','f4','f5','p1','p2','p3','p4','e1','e2','e3'];
+  t.items.forEach((item, i) => {
+    const n = document.getElementById(ids[i]+'n');
+    const d = document.getElementById(ids[i]+'d');
+    if(n) { const tags = n.querySelectorAll('.item-tag'); n.childNodes[0].textContent = item[0]+' '; tags.forEach(t=>n.appendChild(t)); n.childNodes[0].textContent = item[0]; }
+    if(d) d.textContent = item[1];
+  });
+  document.getElementById('btn-es').classList.toggle('active', lang==='es');
+  document.getElementById('btn-en').classList.toggle('active', lang==='en');
+}
+
+const sections = ['cafe','food','postres','especiales'];
+const scroll = document.getElementById('menu-scroll');
+scroll.addEventListener('scroll', () => {
+  let current = 'cafe';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if(el && el.offsetTop - scroll.scrollTop < 120) current = id;
+  });
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const a = document.getElementById('nav-'+current);
+  if(a) a.classList.add('active');
+});
+
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const target = link.getAttribute('href').replace('#','');
+    const el = document.getElementById(target);
+    if(el) scroll.scrollTo({top: el.offsetTop - 42, behavior: 'smooth'});
+  });
+});
+</script>
+</body>
+</html>
